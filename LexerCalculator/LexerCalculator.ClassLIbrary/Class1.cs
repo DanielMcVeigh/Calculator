@@ -60,7 +60,7 @@ namespace LexerCalculator.ClassLibrary
         /// <seealso cref="Enum.TokenType"/>
         private readonly Enum.TokenType _returnsToken;
 
-
+        
         public static Enum.TokenType DefineTokenType(string checkCharacter)
         {
             // Regex definitions
@@ -84,7 +84,7 @@ namespace LexerCalculator.ClassLibrary
             }
             if (blockOutRegex.IsMatch(checkCharacter))
             {
-                return Enum.TokenType.BlockOut;
+                TokenDefinition;
             }
             throw new ArgumentException();
         }
