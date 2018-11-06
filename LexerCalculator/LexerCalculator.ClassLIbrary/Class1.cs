@@ -16,22 +16,19 @@ namespace LexerCalculator.ClassLibrary
         /// <summary>
         /// Defines the TokenType values.
         /// </summary>
-        /// 
-        /// <remarks>
-        /// NotDefined - Any item which the lexer cannot identify will be assigned value 0.
-        /// Operator - Operation symbols such as '*' '+' '-' '/'.
-        /// BlockIn - Any opening block parameter such as '(' '{' '['.
-        /// BlockOut - Any closing block parameter such as ')' ']' '}'.
-        /// NumberValue - Any number which will be used. Either integers or floats. 
-        /// </remarks>
 
         public enum TokenType
         {
             NotDefined,
-            Operator,
-            BlockIn,
-            BlockOut,
-            NumberValue
+            Add,
+            Subtract,
+            Divide,
+            Multiply,
+            IntegerValue,
+            FloatValue,
+            BracketOpen,
+            BracketClose,
+            Power
         }
     }
 
@@ -39,7 +36,6 @@ namespace LexerCalculator.ClassLibrary
     /// Identifies TokenTypes.
     /// </summary>
     /// <seealso cref="Enum.TokenType"/>
-
 
     public class TokenDefinition
     {
@@ -51,78 +47,35 @@ namespace LexerCalculator.ClassLibrary
         /// </value>
         private Regex _regex;
 
-        /// <summary>
-        /// Token type.
-        /// </summary>
-        /// <value>
-        /// Return variable for the TokenType.
-        /// </value>
-        /// <seealso cref="Enum.TokenType"/>
         private readonly Enum.TokenType _returnsToken;
-
-        
-        public static Enum.TokenType DefineTokenType(string checkCharacter)
+            
+        public TokenDefinition(Enum.TokenType returnsToken, string regexPattern)
         {
-            // Regex definitions
-            Regex operatorRegex = new Regex(@"[+^*/=-]");
-            Regex numberValueRegex = new Regex(@"[0-9]");
-            Regex blockInRegex = new Regex(@"[\(\{\[]");
-            Regex blockOutRegex = new Regex(@"[\)\}\]]");
-
-            if (operatorRegex.IsMatch(checkCharacter))
-            {
-                return Enum.TokenType.Operator;
-            }
-
-            if (numberValueRegex.IsMatch(checkCharacter))
-            {
-                return Enum.TokenType.NumberValue;
-            }
-            if (blockInRegex.IsMatch(checkCharacter))
-            {
-                return Enum.TokenType.BlockIn;
-            }
-            if (blockOutRegex.IsMatch(checkCharacter))
-            {
-                TokenDefinition;
-            }
-            throw new ArgumentException();
+            _regex = new Regex(regexPattern, RegexOptions.IgnoreCase);
+            _returnsToken = returnsToken;
         }
 
-        /// <summary>
-        /// Removes all illegal characters from the string parameter using regular expressions.
-        /// </summary>
-        /// <param name="stringInput"> A string input from the user</param>
-        /// <returns>String with all illegal characters removed</returns>
-        public static string SanitizeString(string stringInput)
+        public TokenMatch Match(string inputString)
         {
-            string stringOutput;
-
-            // Remove whitespace
-            stringOutput = Regex.Replace(stringInput, @"\s+", "");
-
-            // Removes unexpected symbols
-            stringOutput = Regex.Replace(stringInput, @"[^a-z^A-Z^0-9+-\/*^(){}\[\]]", "");
-
-            return stringOutput;
-        }
-
-        /// <summary>
-        /// Separates string into a list containing the string of each character.
-        /// </summary>
-        /// <param name="stringInput"></param>
-        /// <returns>List of strings</returns>
-        public static List<string> SeparateCharacters(string stringInput)
-        { 
-            var charArrayInput = stringInput.ToCharArray();
-            List<string> output = new List<string>();
-
-            foreach (char c in charArrayInput)
+            var match = _regex.Match(inputString);
+            if (match.Success)
             {
-                output.Add(c.ToString());
-            }
+                string remainingText = string.Empty;
+                if (match.Length != inputString.Length)
+                    remainingText = inputString.Substring(match.Length);
 
-            return output;
+                return new TokenMatch()
+                {
+                    IsMatch = true,
+                    RemainingText = remainingText,
+                    TokenType = _returnsToken,
+                    Value = match.Value
+                };
+            }
+            else
+            {
+                return new TokenMatch() {IsMatch = false};
+            }
         }
     }
 }

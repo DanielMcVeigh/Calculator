@@ -44,6 +44,10 @@
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token.cs" />
+    <Compile Include="TokenBrackets.cs" />
+    <Compile Include="Tokenizer.cs" />
+    <Compile Include="TokenMatch.cs" />
+    <Compile Include="TokenParse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
