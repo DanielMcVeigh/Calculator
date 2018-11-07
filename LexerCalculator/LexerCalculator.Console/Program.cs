@@ -11,15 +11,13 @@ namespace LexerCalculator.console
     {
         static void Main(string[] args)
         {
-            var tokenizer = new Tokenizer();
-            Console.WriteLine("Input a query to tokenize: ");
-            var query = Console.ReadLine();
-            Console.WriteLine(query);
-            var tokenSequence = tokenizer.Tokenize(query).ToList();
-            foreach (var token in tokenSequence)
-            {
-                Console.WriteLine("TokenType: {0}, Value: {1}", token.TokenType, token.Value);
-            }
+            Console.WriteLine("Input the expression to be parsed: ");
+            var inputString = Console.ReadLine();
+            var match = TokenParse.FindBracketGroup(inputString);
+
+            Console.WriteLine("Input: {0}", inputString);
+            Console.WriteLine("Bracket Group: {0}", match.MatchedGroup);
+            Console.WriteLine("Remaining Text: {0}", match.RemainingText);
 
 
             Console.ReadKey();
